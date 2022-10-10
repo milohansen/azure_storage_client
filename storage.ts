@@ -1,7 +1,6 @@
 import { encode, decode } from "https://deno.land/std@0.158.0/encoding/base64.ts"
 
 import { Container } from './container.ts'
-import { Queue } from "./Queue.ts"
 import { Table } from './table.ts'
 
 /**
@@ -18,7 +17,6 @@ export class AzureStorage {
   #key?: CryptoKey
   #containers: Map<string, Container>
   #tables: Map<string, Table>
-  #queues: Map<string, Queue>
 
   get accountName() {
     return this.#accountName
@@ -29,7 +27,6 @@ export class AzureStorage {
   constructor(connectionString: string) {
     this.#containers = new Map()
     this.#tables = new Map()
-    this.#queues = new Map()
     this.#connectionString = connectionString
   }
 
@@ -70,13 +67,6 @@ export class AzureStorage {
       this.#tables.set(name, new Table(this, name))
     }
     return this.#tables.get(name) as Table
-  }
-
-  queue(name: string): Queue {
-    if (!this.#queues.has(name)) {
-      this.#queues.set(name, new Queue(this, name))
-    }
-    return this.#queues.get(name) as Queue
   }
 
   async createAuthorization(
