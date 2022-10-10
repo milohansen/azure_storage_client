@@ -48,6 +48,15 @@ let text = await storage
   .then(response => res.text())
 ```
 
+### Get blobs
+
+```ts
+let text = await storage
+  .container('example')
+  .list('dir')
+  .then(response => res.text())
+```
+
 ### Delete a blob
 
 ```ts

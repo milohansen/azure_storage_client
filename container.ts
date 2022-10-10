@@ -26,6 +26,10 @@ export class Container {
     return this.fetch('get', `${this.#name}/${path}`)
   }
 
+  list(prefix?: string): Promise<Response> {
+    return this.fetch('get', `${this.#name}?restype=container&comp=list` + (prefix ? `&prefix=${prefix as string}` : ''))
+  }
+
   delete(path: string): Promise<Response> {
     return this.fetch('delete', `${this.#name}/${path}`)
   }
@@ -36,6 +40,7 @@ export class Container {
     data?: Blob | BufferSource,
     headers?: Record<string, string>
   ): Promise<Response> {
+    console.log('url:', url)
     // TODO: content-md5
 
     await this.#storage.initialize()
@@ -68,7 +73,6 @@ export class Container {
       option.body = data
     }
     option.headers = requestHeaders
-    console.log('option:', option)
 
     return fetch(
       `https://${this.#storage.accountName}.blob.${this.#storage.endpointSuffix}/${url}`,
