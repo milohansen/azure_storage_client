@@ -15,7 +15,7 @@ You can get it from the Azure portal.
 
 
 ```ts
-import { Storage } from "https://deno.land/x/storage@0.0.5/mod.ts"
+import { Storage } from "https://deno.land/x/storage@0.1.0/mod.ts"
 
 let storage = new Storage(/* Connection string here */)
 
