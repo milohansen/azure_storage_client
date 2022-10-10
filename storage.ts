@@ -95,7 +95,7 @@ export class AzureStorage {
           '\n' +  [...query.entries()]
             .map(entry => `${entry[0].toLowerCase()}:${entry[1]}`)
             .sort((a, b) => a < b ? -1 : 1)
-            .join(',') :
+            .join('\n') :
           ''
       )
 
