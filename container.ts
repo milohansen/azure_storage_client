@@ -40,7 +40,6 @@ export class Container {
     data?: Blob | BufferSource,
     headers?: Record<string, string>
   ): Promise<Response> {
-    console.log('url:', url)
     // TODO: content-md5
 
     await this.#storage.initialize()
