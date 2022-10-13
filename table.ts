@@ -30,12 +30,16 @@ export class Table {
     })
   }
 
-  put(partitionKey: string, rowkey:string, data: Record<string, string | number | boolean>) {
-    return this.fetch('put', `${this.name}(PartitionKey='${partitionKey}',RowKey='${rowkey}')`, data)
+  put(partitionKey: string, rowkey:string, data: Record<string, string | number | boolean>, eTag?: string) {
+    return this.fetch('put', `${this.name}(PartitionKey='${partitionKey}',RowKey='${rowkey}')`, data, {
+      'If-Match': eTag || '*'
+    })
   }
 
-  merge(partitionKey: string, rowkey:string, data: Record<string, string | number | boolean>) {
-    return this.fetch('merge', `${this.name}(PartitionKey='${partitionKey}',RowKey='${rowkey}')`, data)
+  merge(partitionKey: string, rowkey:string, data: Record<string, string | number | boolean>, eTag?: string) {
+    return this.fetch('merge', `${this.name}(PartitionKey='${partitionKey}',RowKey='${rowkey}')`, data, {
+      'If-Match': eTag || '*'
+    })
   }
 
   delete(partitionKey: string, rowkey:string, eTag?: string) {
