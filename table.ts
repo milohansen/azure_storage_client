@@ -30,6 +30,12 @@ export class Table {
     })
   }
 
+  list(partitionKey: string, isFullMetadata = false) {
+    return this.fetch('get', `${this.name}()?$filter=PartitionKey eq '${partitionKey}'`, undefined, {
+      'Accept': isFullMetadata ? 'application/json;odata=fullmetadata' : 'application/json;odata=nometadata'
+    })
+  }
+
   put(partitionKey: string, rowkey:string, data: Record<string, string | number | boolean>, eTag?: string) {
     return this.fetch('put', `${this.name}(PartitionKey='${partitionKey}',RowKey='${rowkey}')`, data, {
       'If-Match': eTag || '*'

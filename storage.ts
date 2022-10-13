@@ -88,12 +88,13 @@ export class AzureStorage {
         .join('\n') + '\n'
 
      // https://learn.microsoft.com/en-US/rest/api/storageservices/authorize-with-shared-key#shared-key-format-for-2009-09-19-and-later
+    let pureQueries = [...query.entries()].filter(entry => !entry[0].startsWith('$'))
     let canonicalizedResource =
       `/${this.#accountName}/${encodeURI(pathname)}` +
       (
-        search ?
-          '\n' +  [...query.entries()]
-            .map(entry => `${entry[0].toLowerCase()}:${entry[1]}`)
+        pureQueries.length ?
+          '\n' +  pureQueries
+            .map(entry => `${entry[0].toLowerCase()}:${entry[1].replaceAll(' ', '%20')}`)
             .sort((a, b) => a < b ? -1 : 1)
             .join('\n') :
           ''
