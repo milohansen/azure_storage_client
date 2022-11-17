@@ -25,13 +25,14 @@ let storage = new Storage(/* Connection string here */)
 
 Each method returns a Response object.
 
-### Create or Update a blob
+### Create or Update
 
 ```ts
 let res = await storage
   .container('example') // A container name
+  .dir('dir') // A directory name
+  .file('file.txt') // A file name
   .put(
-    'dir/file.txt', // A file path
     new TextEncoder().encode('Hello World'), // Blob or BufferSource
     'text/plain' // Content-Type
   )
@@ -39,30 +40,35 @@ let res = await storage
 console.log('isSucceed:': res.ok)
 ```
 
-### Get a blob
+### Get
 
 ```ts
 let text = await storage
   .container('example')
-  .get('dir/file.txt')
+  .dir('dir')
+  .file('file.txt')
+  .get()
   .then(res => res.text())
 ```
 
-### Get blobs
+### List
 
 ```ts
 let text = await storage
   .container('example')
-  .list('dir')
+  .dir('dir')
+  .list()
   .then(res => res.text())
 ```
 
-### Delete a blob
+### Delete
 
 ```ts
 let res = await storage
   .container('example')
-  .delete('dir/file.txt')
+  .dir('dir')
+  .file('file.txt')
+  .delete()
 
 console.log('isDeleted:': res.ok)
 ```
@@ -72,55 +78,64 @@ console.log('isDeleted:': res.ok)
 
 Each method returns a Response object.
 
-### Create a entity
+### Create
 
 ```ts
 let res = await storage
   .table('example')
-  .post('abc', 'def', { // A partition key and a row key
-    key1: 'value' // A string or number or boolean
-    key2: 100
+  .partition('abc') // A partition key
+  .entity('def') // a row key
+  .post({
+    prop1: 'value' // A string or number or boolean
+    prop2: 100
   })
 
 console.log('isSucceed:': res.ok)
 ```
 
-### Get a entity
+### Get
 
 ```ts
 let entity = await storage
   .table('example')
-  .get('abc', 'def')
+  .partition('abc')
+  .entity('def')
+  .get()
   .then(res => res.json())
 ```
 
-### List entities
+### List
 
 ```ts
-let entity = await storage
+let entities = await storage
   .table('example')
-  .list('abc')
+  .partition('abc')
+  .list()
   .then(res => res.json())
 ```
 
-### Update a entity
+### Update
 
 ```ts
 let res = await storage
   .table('example')
-  .merge('abc', 'def', {
+  .partition('abc')
+  .entity('def')
+  .merge({
     key2: 400
   })
 
 console.log('isSucceed:': res.ok)
 ```
 
-### Create or Update a entity
+### Create or Update
 
 ```ts
 let res = await storage
   .table('example')
-  .put('abc', 'def', {
+  .partition('abc')
+  .entity('def')
+  .put({
     key1: 'value'
     key2: 400
   })
@@ -128,12 +143,14 @@ let res = await storage
 console.log('isSucceed:': res.ok)
 ```
 
-### Delete a entity
+### Delete
 
 ```ts
 let res = await storage
   .table('example')
-  .delete('abc', 'def')
+  .partition('abc')
+  .entity('def')
+  .delete()
 
 console.log('isDeleted:': res.ok)
 ```

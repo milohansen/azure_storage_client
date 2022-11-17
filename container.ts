@@ -16,22 +16,16 @@ export class Container {
     this.#name = name
   }
 
-  put(path: string, data: Blob | BufferSource, contentType: string): Promise<Response> {
-    return this.fetch('put', `${this.#name}/${path}`, data, {
-      'Content-Type': contentType
-    })
+  dir(path: string) {
+    return new ContainerDirectory(this, path)
   }
 
-  get(path: string): Promise<Response> {
-    return this.fetch('get', `${this.#name}/${path}`)
+  file(path: string) {
+    return new ContainerFile(this, path)
   }
 
-  list(prefix?: string): Promise<Response> {
-    return this.fetch('get', `${this.#name}?restype=container&comp=list` + (prefix ? `&prefix=${prefix as string}` : ''))
-  }
-
-  delete(path: string): Promise<Response> {
-    return this.fetch('delete', `${this.#name}/${path}`)
+  list(): Promise<Response> {
+    return this.fetch('get', `${this.#name}?restype=container&comp=list`)
   }
 
   async fetch(
@@ -77,5 +71,63 @@ export class Container {
       `https://${this.#storage.accountName}.blob.${this.#storage.endpointSuffix}/${url}`,
       option
     )
+  }
+}
+
+export class ContainerDirectory {
+  #container: Container
+  #path: string
+
+  constructor(container: Container, path: string) {
+    this.#container = container
+    this.#path = path
+  }
+
+  get container() {
+    return this.#container
+  }
+
+  get path() {
+    return this.#path
+  }
+
+  file(path: string) {
+    return new ContainerFile(this.#container, this.#path + '/' + path)
+  }
+
+  list(): Promise<Response> {
+    return this.container.fetch('get', `${this.#container.name}?restype=container&comp=list` + (this.#path ? `&prefix=${this.#path as string}` : ''))
+  }
+}
+
+export class ContainerFile {
+  #container: Container
+  #path: string
+
+  constructor(container: Container, path: string) {
+    this.#container = container
+    this.#path = path
+  }
+
+  get container() {
+    return this.#container
+  }
+
+  get path() {
+    return this.#path
+  }
+
+  put(data: Blob | BufferSource, contentType: string): Promise<Response> {
+    return this.#container.fetch('put', `${this.#container.name}/${this.#path}`, data, {
+      'Content-Type': contentType
+    })
+  }
+
+  get(): Promise<Response> {
+    return this.#container.fetch('get', `${this.#container.name}/${this.#path}`)
+  }
+
+  delete(): Promise<Response> {
+    return this.#container.fetch('delete', `${this.#container.name}/${this.#path}`)
   }
 }
