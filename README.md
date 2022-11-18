@@ -1,6 +1,6 @@
 # azure_storage_client
 
-A simple client for Azure Storage REST API.
+A simple client for Azure Storage and Key Vault REST API.
 
 This client works query builder chaining. Each methods returns a Response object of the Fetch API.
 
@@ -41,7 +41,7 @@ let res = await blob.put(
   'text/plain' // Content-Type
 )
 
-console.log('isSucceed:': res.ok)
+console.log('Succeed:': res.ok)
 ```
 
 ### Get
@@ -83,12 +83,14 @@ let entity = await storage
 ### Create
 
 ```ts
-let res = await entity.post({
-  prop1: 'value' // A string or number or boolean
-  prop2: 100
-})
+let res = await entity.post(
+  {
+    prop1: 'value' // A string or number or boolean
+    prop2: 100
+  }
+)
 
-console.log('isSucceed:': res.ok)
+console.log('Succeed:': res.ok)
 ```
 
 ### Get
@@ -100,22 +102,26 @@ let data = await entity.get().then(res => res.json())
 ### Update
 
 ```ts
-let res = await entity.merge({
-  key2: 400
-})
+let res = await entity.merge(
+  {
+    key2: 400
+  }
+)
 
-console.log('isSucceed:': res.ok)
+console.log('Succeed:': res.ok)
 ```
 
 ### Create or Update
 
 ```ts
-let res = await entity.put({
-  key1: 'value'
-  key2: 400
-})
+let res = await entity.put(
+  {
+    key1: 'value'
+    key2: 400
+  }
+)
 
-console.log('isSucceed:': res.ok)
+console.log('Succeed:': res.ok)
 ```
 
 ### Delete
@@ -134,4 +140,63 @@ let entities = await storage
   .partition('abc') // Optional
   .list()
   .then(res => res.json())
+```
+
+## Key Vault
+
+In advance, prease create an Azure AD application in the Azure portal so that it can access the kay vault
+
+
+```ts
+import { AzureADApplication } from 'https://deno.land/x/azure_storage_client@0.5.0/mod.ts'
+
+let vault = new AzureADApplication(
+  {
+    tenantId: '****',
+    clientId: '****',
+    clientSecret: '****'
+  }
+).vault('****') // A kay vault resource name
+```
+
+## Secret Examples
+
+### Get
+
+```ts
+let secret = await vault.secret('example').get().then(res => res.text())
+```
+
+## Key Examples
+
+### Identify the key
+
+```ts
+let key = await vault
+  .key('example')
+  .version('***') // A version(optional)
+```
+
+### Get
+
+```ts
+let data = await key.get().then(res => res.json())
+```
+
+### Sign
+
+```ts
+let res = await key.sign(
+  '****', // A digest encoded by BASE64 URL
+  'RS256' // A encryption algorithm
+)
+
+console.log('Succeed:': res.ok)
+```
+
+## Get versions
+
+
+```ts
+let data = await key.versions().then(res => res.json())
 ```
