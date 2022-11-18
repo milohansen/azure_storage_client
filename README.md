@@ -144,7 +144,7 @@ let entities = await storage
 
 ## Key Vault
 
-In advance, prease create an Azure AD application in the Azure portal so that it can access the kay vault
+In advance, please create an Azure AD application in the Azure portal so that it can access the kay vault
 
 
 ```ts
