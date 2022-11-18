@@ -1,13 +1,5 @@
 import { AzureADApplication } from "./app.ts"
 
-
-/**
- * Azure Key Vaultクライアント
- *
- * @remarks
- *
- * REST APIの解説: {@link https://docs.microsoft.com/ja-jp/rest/api/keyvault/}
- */
 export class KeyVault {
   #app: AzureADApplication
   #name: string

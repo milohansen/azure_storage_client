@@ -7,7 +7,7 @@ type KeyVaultConfig = {
 }
 
 /**
- * Azure Key Vaultクライアント
+ * Azure AD Application Client for Key Vault
  *
  * @remarks
  *
