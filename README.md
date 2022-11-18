@@ -17,9 +17,9 @@ It's easy to get from the Azure portal.
 
 
 ```ts
-import { Storage } from "https://deno.land/x/azure_storage_client@0.5.0/mod.ts"
+import { AzureStorage } from "https://deno.land/x/azure_storage_client@0.5.0/mod.ts"
 
-let storage = new Storage(/* The connection string here */)
+let storage = new AzureStorage(/* The connection string here */)
 ```
 
 ## Blob Examples
@@ -164,7 +164,7 @@ let vault = new AzureADApplication(
 ### Get
 
 ```ts
-let secret = await vault.secret('example').get().then(res => res.text())
+let secret = await vault.secret('example').get().then(res => res.json().value)
 ```
 
 ## Key Examples
