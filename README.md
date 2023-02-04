@@ -164,7 +164,7 @@ let vault = new AzureADApplication(
 ### Get
 
 ```ts
-let secret = await vault.secret('example').get().then(res => res.json())
+let secret: SecretResult = await vault.secret('example').get().then(res => res.json())
 ```
 
 ## Key Examples
@@ -180,7 +180,7 @@ let key = await vault
 ### Get
 
 ```ts
-let data = await key.get().then(res => res.json())
+let data: KeyResult = await key.get().then(res => res.json())
 ```
 
 ### Sign
@@ -198,5 +198,5 @@ console.log('Succeed:': res.ok)
 
 
 ```ts
-let data = await key.versions().then(res => res.json())
+let data: KeyVersionsResult = await key.versions().then(res => res.json())
 ```
