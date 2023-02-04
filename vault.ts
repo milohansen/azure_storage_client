@@ -1,5 +1,44 @@
 import { AzureADApplication } from "./app.ts"
 
+type KeyVaultResultAttributes = {
+  enabled: boolean
+  exp: number
+  created: number
+  updated: number
+  recoveryLevel: string
+  recoverableDays: number
+  exportable?: boolean
+}
+
+export type SecretResult = {
+  value: string
+  id: string
+  attributes: KeyVaultResultAttributes
+  tags: Record<string, string>
+}
+
+export type KeyResult = {
+  key: JsonWebKey
+  attributes: KeyVaultResultAttributes
+  tags: Record<string, string>
+}
+
+export type KeyVersionsResult = {
+  value: {
+    kid: string
+    attributes: KeyVaultResultAttributes
+    tags: Record<string, string>
+  }
+  nextLink: null | string
+}
+
+export type KeyVaultErrorResult = {
+  error: {
+    code: string
+    message: string
+  }
+}
+
 export class KeyVault {
   #app: AzureADApplication
   #name: string
