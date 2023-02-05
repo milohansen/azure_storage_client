@@ -164,7 +164,9 @@ let vault = new AzureADApplication(
 ### Get
 
 ```ts
-let secret: SecretResult = await vault.secret('example').get().then(res => res.json())
+let response = await key.get() // Response
+let result = await key.getJson() // SecretResult object
+let webKey = await key.getValue() // string value
 ```
 
 ## Key Examples
@@ -180,7 +182,9 @@ let key = await vault
 ### Get
 
 ```ts
-let data: KeyResult = await key.get().then(res => res.json())
+let response = await key.get() // Response
+let result = await key.getJson() // KeyResult object
+let webKey = await key.getKey() // JsonWebKey
 ```
 
 ### Sign

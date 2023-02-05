@@ -96,6 +96,16 @@ export class Secret {
   get(): Promise<Response> {
     return this.#vault.fetch('GET', `/secrets/${this.#name}?api-version=7.3`)
   }
+
+  getJson(): Promise<SecretResult> {
+    return this.get()
+      .then(res => res.json())
+  }
+
+  getValue(): Promise<string> {
+    return this.getJson()
+      .then(result => result.value)
+  }
 }
 
 export class Key {
@@ -123,6 +133,16 @@ export class Key {
 
   get(): Promise<Response> {
     return this.#vault.fetch('GET', `/keys/${this.#name}${this.#version ? `/${this.#version}` : ''}?api-version=7.3`)
+  }
+
+  getJson(): Promise<KeyResult> {
+    return this.get()
+      .then(res => res.json())
+  }
+
+  getKey(): Promise<JsonWebKey> {
+    return this.getJson()
+      .then(result => result.key)
   }
 
   sign(value: string, alg: string): Promise<Response> {
