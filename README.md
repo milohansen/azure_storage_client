@@ -17,7 +17,7 @@ It's easy to get from the Azure portal.
 
 
 ```ts
-import { AzureStorage } from "https://deno.land/x/azure_storage_client@0.6.0/mod.ts"
+import { AzureStorage } from "https://deno.land/x/azure_storage_client@0.7.0/mod.ts"
 
 let storage = new AzureStorage(/* The connection string here */)
 ```
@@ -148,7 +148,7 @@ In advance, please create an Azure AD application in the Azure portal so that it
 
 
 ```ts
-import { AzureADApplication } from 'https://deno.land/x/azure_storage_client@0.6.0/mod.ts'
+import { AzureADApplication } from 'https://deno.land/x/azure_storage_client@0.7.0/mod.ts'
 
 let vault = new AzureADApplication(
   {
