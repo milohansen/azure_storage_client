@@ -17,7 +17,7 @@ It's easy to get from the Azure portal.
 
 
 ```ts
-import { AzureStorage } from "https://deno.land/x/azure_storage_client@0.8.0/mod.ts"
+import { AzureStorage } from "https://deno.land/x/azure_storage_client@0.8.1/mod.ts"
 
 let storage = new AzureStorage(/* The connection string here */)
 ```
@@ -148,8 +148,8 @@ let entities = await storage
 let entities = await storage
   .table('example')
   .partition('abc') // Optional
-  .filter()
-  .list(`Timestamp ge datetime'2023-01-01T00:00:00.000Z'`)
+  .filter(`Timestamp ge datetime'2023-01-01T00:00:00.000Z'`)
+  .list()
   .then(res => res.json())
 ```
 
@@ -159,7 +159,7 @@ In advance, please create an Azure AD application in the Azure portal so that it
 
 
 ```ts
-import { AzureADApplication } from 'https://deno.land/x/azure_storage_client@0.8.0/mod.ts'
+import { AzureADApplication } from 'https://deno.land/x/azure_storage_client@0.8.1/mod.ts'
 
 let vault = new AzureADApplication(
   {
