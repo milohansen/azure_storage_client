@@ -20,6 +20,10 @@ export class Table {
     return new TablePartition(this, partitionKey)
   }
 
+  filter(condition: string) {
+    return new FilteredTable(this, [condition])
+  }
+
   list(isFullMetadata = false) {
     return this.fetch('get', `${this.#name}()`, undefined, {
       'Accept': isFullMetadata ? 'application/json;odata=fullmetadata' : 'application/json;odata=nometadata'
@@ -70,6 +74,30 @@ export class Table {
   }
 }
 
+export class FilteredTable {
+  #table: Table
+  #conditions: string[]
+
+  constructor(table: Table, conditions: string[]) {
+    this.#table = table
+    this.#conditions = conditions
+  }
+
+  get table() {
+    return this.#table
+  }
+
+  filter(condition: string) {
+    return new FilteredTable(this.#table, [...this.#conditions, condition])
+  }
+
+  list(isFullMetadata = false) {
+    return this.table.fetch('get', `${this.table.name}()${this.#conditions.length ? `?$filter=${this.#conditions.join(' and ')}` : ''}`, undefined, {
+      'Accept': isFullMetadata ? 'application/json;odata=fullmetadata' : 'application/json;odata=nometadata'
+    })
+  }
+}
+
 export class TablePartition {
   #table: Table
   #partitionKey: string
@@ -91,6 +119,10 @@ export class TablePartition {
     return new TableEntity(this, rowKey)
   }
 
+  filter(condition: string) {
+    return new FilteredTablePartition(this, [condition])
+  }
+
   list(isFullMetadata = false) {
     return this.table.fetch('get', `${this.#table.name}()?$filter=PartitionKey eq '${this.#partitionKey}'`, undefined, {
       'Accept': isFullMetadata ? 'application/json;odata=fullmetadata' : 'application/json;odata=nometadata'
@@ -98,6 +130,33 @@ export class TablePartition {
   }
 }
 
+export class FilteredTablePartition {
+  #partition: TablePartition
+  #conditions: string[]
+
+  get table() {
+    return this.#partition.table
+  }
+
+  get partition() {
+    return this.#partition
+  }
+
+  constructor(partition: TablePartition, conditions: string[]) {
+    this.#partition = partition
+    this.#conditions = conditions
+  }
+
+  filter(condition: string) {
+    return new FilteredTablePartition(this.#partition, [...this.#conditions, condition])
+  }
+
+  list(isFullMetadata = false) {
+    return this.table.fetch('get', `${this.table.name}()?$filter=PartitionKey eq '${this.#partition.partitionKey}'${this.#conditions.length ? `and (${this.#conditions.join(' and ')})` : ''}`, undefined, {
+      'Accept': isFullMetadata ? 'application/json;odata=fullmetadata' : 'application/json;odata=nometadata'
+    })
+  }
+}
 
 export class TableEntity {
   #partition: TablePartition

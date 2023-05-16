@@ -142,6 +142,17 @@ let entities = await storage
   .then(res => res.json())
 ```
 
+### Filter
+
+```ts
+let entities = await storage
+  .table('example')
+  .partition('abc') // Optional
+  .filter()
+  .list(`Timestamp ge datetime'2023-01-01T00:00:00.000Z'`)
+  .then(res => res.json())
+```
+
 ## Key Vault
 
 In advance, please create an Azure AD application in the Azure portal so that it can access the kay vault
