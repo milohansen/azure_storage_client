@@ -18,8 +18,15 @@ export class Queue {
 
   put(message: string) {
     let data = `<QueueMessage><MessageText>${message}</MessageText></QueueMessage>`
-    console.log('data:', data)
     return this.fetch('post', `${this.name}/messages`, data)
+  }
+
+  get() {
+    return this.fetch('get', `${this.name}/messages`)
+  }
+
+  delete(messageId: string, popreceipt: string) {
+    return this.fetch('delete', `${this.name}/messages/${messageId}?popreceipt=${popreceipt}`)
   }
 
   async fetch(
