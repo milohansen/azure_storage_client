@@ -44,9 +44,11 @@ export class Queue {
     let option: RequestInit = { method }
 
     if (
-      method.toLowerCase() === 'post' ||
-      method.toLowerCase() === 'put' ||
-      method.toLowerCase() === 'merge'
+      data && (
+        method.toLowerCase() === 'post' ||
+        method.toLowerCase() === 'put' ||
+        method.toLowerCase() === 'merge'
+      )
     ) {
       option.body = data
       let blob = new Blob([option.body], {type: 'text/plain'});
@@ -87,8 +89,13 @@ export class QueueMessage {
     return this.#popreceipt
   }
 
-  delete(popreceipt: string) {
+  delete() {
     return this.queue.fetch('delete', `${this.queue.name}/messages/${this.messageId}?popreceipt=${this.popreceipt}`)
+  }
+
+  update(visibilityTimeout: number, message: string | undefined) {
+    let data = message ? `<QueueMessage><MessageText>${message}</MessageText></QueueMessage>` : undefined
+    return this.queue.fetch('put', `${this.queue.name}/messages/${this.messageId}?popreceipt=${this.popreceipt}&visibilitytimeout=${visibilityTimeout}`, data)
   }
   
   constructor(queue: Queue, messageId: string, popreceipt: string) {
