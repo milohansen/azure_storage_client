@@ -2,6 +2,7 @@ import { encode, decode } from "https://deno.land/std@0.158.0/encoding/base64.ts
 
 import { Container } from './container.ts'
 import { Table } from './table.ts'
+import { Queue } from './queue.ts'
 
 /**
  * Azure Storage Client
@@ -17,6 +18,7 @@ export class AzureStorage {
   #key?: CryptoKey
   #containers: Map<string, Container>
   #tables: Map<string, Table>
+  #queues: Map<string, Queue>
 
   get accountName() {
     return this.#accountName
@@ -27,6 +29,7 @@ export class AzureStorage {
   constructor(connectionString: string) {
     this.#containers = new Map()
     this.#tables = new Map()
+    this.#queues = new Map()
     this.#connectionString = connectionString
   }
 
@@ -69,6 +72,13 @@ export class AzureStorage {
     return this.#tables.get(name) as Table
   }
 
+  queue(name: string): Table {
+    if (!this.#queues.has(name)) {
+      this.#queues.set(name, new Queue(this, name))
+    }
+    return this.#queues.get(name) as Queue
+  }
+
   async createAuthorization(
     method: string,
     url: string,
@@ -87,7 +97,7 @@ export class AzureStorage {
         .sort((a, b) => a < b ? -1 : 1)
         .join('\n') + '\n'
 
-     // https://learn.microsoft.com/en-US/rest/api/storageservices/authorize-with-shared-key#shared-key-format-for-2009-09-19-and-later
+    // https://learn.microsoft.com/en-US/rest/api/storageservices/authorize-with-shared-key#shared-key-format-for-2009-09-19-and-later
     let pureQueries = [...query.entries()].filter(entry => !entry[0].startsWith('$'))
     let canonicalizedResource =
       `/${this.#accountName}/${encodeURI(pathname)}` +
