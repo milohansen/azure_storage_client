@@ -21,8 +21,24 @@ export class Queue {
     return this.fetch('post', `${this.name}/messages`, data)
   }
 
-  get(visibilityTimeout?: number) {
-    return this.fetch('get', `${this.name}/messages${visibilityTimeout !== undefined ? `?visibilitytimeout=${visibilityTimeout}` : ''}`)
+  get(visibilityTimeout?: number, count?: number) {
+    let query = new URLSearchParams(JSON.parse(JSON.stringify({
+      numofmessages: count,
+      visibilitytimeout: visibilityTimeout,
+    })))
+    return this.fetch('get', `${this.name}/messages${[...query.keys()].length ? `?${query.toString()}` : ''}`)
+  }
+
+  peek(count?: number) {
+    let query = new URLSearchParams(JSON.parse(JSON.stringify({
+      peekonly: 'true',
+      numofmessages: count,
+    })))
+    return this.fetch('get', `${this.name}/messages${[...query.keys()].length ? `?${query.toString()}` : ''}`)
+  }
+
+  clear() {
+    return this.fetch('delete', `${this.name}/messages`)
   }
 
   message(messageId: string, popreceipt: string): QueueMessage {
@@ -35,6 +51,7 @@ export class Queue {
     data?: string,
     headers?: Record<string, string>
   ): Promise<Response> {
+    console.log('url:', url)
     let date = new Date().toUTCString()
 
     let requestHeaders: Record<string, string> = {
