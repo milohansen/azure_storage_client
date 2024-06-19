@@ -25,8 +25,8 @@ export class Queue {
     return this.fetch('get', `${this.name}/messages`)
   }
 
-  delete(messageId: string, popreceipt: string) {
-    return this.fetch('delete', `${this.name}/messages/${messageId}?popreceipt=${popreceipt}`)
+  message(messageId: string, popreceipt: string): QueueMessage {
+    return new QueueMessage(this, messageId, popreceipt)
   }
 
   async fetch(
@@ -67,5 +67,33 @@ export class Queue {
       `https://${this.#storage.accountName}.queue.${this.#storage.endpointSuffix}/${url}`,
       option
     )
+  }
+}
+
+export class QueueMessage {
+  #queue: Queue
+  #messageId: string
+  #popreceipt: string
+
+  get queue() {
+    return this.#queue
+  }
+
+  get messageId() {
+    return this.#messageId
+  }
+
+  get popreceipt() {
+    return this.#popreceipt
+  }
+
+  delete(popreceipt: string) {
+    return this.queue.fetch('delete', `${this.queue.name}/messages/${this.messageId}?popreceipt=${this.popreceipt}`)
+  }
+  
+  constructor(queue: Queue, messageId: string, popreceipt: string) {
+    this.#queue = queue
+    this.#messageId = messageId
+    this.#popreceipt = popreceipt
   }
 }
