@@ -153,6 +153,56 @@ let entities = await storage
   .then(res => res.json())
 ```
 
+## Queue Examples
+
+### Put
+
+```ts
+let res = await storage.queue('queueName').put('message')
+```
+
+### Dequeue
+
+```ts
+let xml = await storage.queue('queueName').get().then(res => res.text())
+let data = parse(xml) // require parse xml (https://deno.land/x/xml)
+
+if (data.QueueMessagesList) {
+  let { MessageText, MessageId, PopReceipt } = data.QueueMessagesList.QueueMessage
+  console.log('message:', MessageText)
+  await storage.queue('queueName').message(MessageId, PopReceipt).delete()
+} else {
+  console.log('The queue is empty')
+}
+```
+
+### Visibility Timeout
+
+```ts
+let xml = await storage.queue('queueName').get(10).then(res => res.text()) // 10 sec
+let data = parse(xml) // require parse xml (https://deno.land/x/xml)
+
+if (data.QueueMessagesList) {
+  let { MessageText, MessageId, PopReceipt } = data.QueueMessagesList.QueueMessage
+  console.log('message:', MessageText)
+  await storage.queue('queueName').message(MessageId, PopReceipt).update(30) // 30 sec
+} else {
+  console.log('The queue is empty')
+}
+```
+
+### Clear
+
+```ts
+let res = await storage.queue('queueName').clear()
+```
+
+### Peek
+
+```ts
+let xml = await storage.queue('queueName').peek(10).then(res => res.text()) // 10 messages
+```
+
 ## Key Vault
 
 In advance, please create an Azure AD application in the Azure portal so that it can access the kay vault
