@@ -21,8 +21,8 @@ export class Queue {
     return this.fetch('post', `${this.name}/messages`, data)
   }
 
-  get() {
-    return this.fetch('get', `${this.name}/messages`)
+  get(visibilityTimeout?: number) {
+    return this.fetch('get', `${this.name}/messages${visibilityTimeout !== undefined ? `?visibilitytimeout=${visibilityTimeout}` : ''}`)
   }
 
   message(messageId: string, popreceipt: string): QueueMessage {
