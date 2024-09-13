@@ -39,6 +39,7 @@ let blob = await storage
 let res = await blob.put(
   new TextEncoder().encode('Hello World'), // Blob or BufferSource
   'text/plain' // Content-Type
+  // { 'Content-MD5': xxx } // additional headers (optional)
 )
 
 console.log('Succeed:': res.ok)

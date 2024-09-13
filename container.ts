@@ -117,8 +117,9 @@ export class ContainerFile {
     return this.#path
   }
 
-  put(data: Blob | BufferSource, contentType: string): Promise<Response> {
+  put(data: Blob | BufferSource, contentType: string, additionalHeaders?: PutHeaders): Promise<Response> {
     return this.#container.fetch('put', `${this.#container.name}/${this.#path}`, data, {
+      ...additionalHeaders,
       'Content-Type': contentType
     })
   }
@@ -130,4 +131,15 @@ export class ContainerFile {
   delete(): Promise<Response> {
     return this.#container.fetch('delete', `${this.#container.name}/${this.#path}`)
   }
+}
+
+/** A subset of headers that can be used in put method
+ *  @see https://learn.microsoft.com/en-us/rest/api/storageservices/put-blob#request-headers-all-blob-types
+ */ 
+type PutHeaders = {
+  "Cache-Control"?: string
+  "Content-MD5"?: string
+  "Content-Encoding"?: string
+  "Content-Language"?: string
+  "x-ms-blob-content-disposition"?: string
 }
